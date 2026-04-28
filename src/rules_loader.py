@@ -12,7 +12,7 @@ class RulesEntry:
 def load_rules(path: str) -> list[RulesEntry]:
     entries:list[RulesEntry] = []
     latest_entry:RulesEntry
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row["title"] != "":
