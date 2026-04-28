@@ -28,16 +28,12 @@ def ask_rules_bot(entries:list[RulesEntry], question:str) -> None:
         ],
     )
     print(message.content[0].text) # type: ignore
-
+    print(f"\nTokens used — input: {message.usage.input_tokens}, output: {message.usage.output_tokens}")
 
 if __name__ == "__main__":
     entries = load_rules("data/codex-27 Apr 2026.csv")
-    queries = [
-        "how does airborne work?",
-        "can an airborne unit be intercepted?",
-        "how do I cast a minion?",
-        "what happens when a card is banished?",
-        "what is the storyline?",
-    ]
-    for q in queries:
-        ask_rules_bot(entries, q)
+    while True:
+        question = input("\nAsk a rules question (or 'quit' to exit): ")
+        if question.lower() == "quit":
+            break
+        ask_rules_bot(entries, question)
