@@ -1,3 +1,4 @@
+import textwrap
 from rules_loader import search_rules, load_rules, RulesEntry
 from anthropic import Anthropic
 from config import ANTHROPIC_API_KEY
@@ -22,7 +23,20 @@ def ask_rules_bot(entries:list[RulesEntry], question:str) -> None:
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=1024,
-        system="You are a Sorcery: Contested Realm rules expert. Answer using ONLY the rules provided below. If the answer isn't in the provided rules, say so.",
+        system= textwrap.dedent("""
+        You are a Sorcery: Contested Realm rules expert. 
+        Answer using ONLY the rules provided below.
+        If the answer isn't in the provided rules, say so.
+        Answer in the following format, with a single sentence per line of information.
+        <format>
+        Answer:
+        Insert the answer to the question here.
+        Rules:
+        Insert the rules supporting the answer here.
+        Exception:
+        If there are any, insert the exceptions to the answer/rule here.
+        </format>
+        """),
         messages=[
         {"role": "user", "content": f"{formatted_rulings}\n\nQuestion: {question}"}
         ],
