@@ -27,42 +27,47 @@ def load_rules(path: str) -> list[RulesEntry]:
 
 
 
-def search_rules(entries:list[RulesEntry], query:str) -> list[RulesEntry]:
+def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,float]) -> list[RulesEntry]:
     most_relevant:list[RulesEntry] = []
     words = query.split()
     STOP_WORDS = {"the", "a", "an", "is", "are", "can", "how", "does", "do", "what", "when", "be", "i", "to", "it", "of", "in", "and", "or", "my"}
     cleaned = [normalise_word(word) for word in words]
     key_words = [word for word in cleaned if word not in STOP_WORDS]
-    scoreboard:list[int] = []
+    scoreboard:list[float] = []
     for entry in entries:
         score = 0
-        for word in key_words:
-            if word in entry.title.lower():
-                if word == entry.title.lower():
-                    score += 10
-                else: score += 3
-            if word in entry.content.lower():
-                score += 1
-            # Check subcodex labels (keys)
-            for label in entry.subcodexes:
-                if word in label.lower():
-                    score += 2
+        # using list because we want to collect all words within an entry
+        all_words = list()
+        all_words.append(normalise_word(entry.title))
+        # split str content into words and add each
+        for word in entry.content.split():
+            all_words.append(normalise_word(word))
 
-            # Check subcodex content (values)
-            for text in entry.subcodexes.values():
-                if word in text.lower():
-                    score += 1
+        # extract key and values from a dict item
+        for key, values in entry.subcodexes.items():
+            all_words.append(normalise_word(key))
+            for word in values.split():
+                all_words.append(normalise_word(word))
+        
+        # looping through all keywords, generating a score for an entry based on TF (term frequency) * IDF (Inverse document frequency)
+        for word in key_words:
+            score += (all_words.count(word) * idf_values[word]) / len(all_words)
+        
         scoreboard.append(score)
+
+        
     # Pair them up into a list of tuples
     paired = list(zip(entries, scoreboard))
     # Filter out zero scores
-    paired = [pair for pair in paired if pair[1] > (0.4 * max(scoreboard))]
+    paired = [pair for pair in paired if pair[1] > (0)] # 0.4 * max(scoreboard)
     for content, scored in paired:
         print(f"Keyword: {content.title}: {scored}")
     # Sort by score, highest first
     paired.sort(key=lambda pair: pair[1], reverse=True)
     # Take top 5 and extract just the entries
     most_relevant = [pair[0] for pair in paired[:5]]
+    for rule in most_relevant:
+        print(rule.title)
     print(key_words)
     return most_relevant
 
@@ -105,11 +110,9 @@ def normalise_word(word:str) -> str :
 if __name__ == "__main__":
     entries = load_rules("data/codex-27 Apr 2026.csv")
     idf_values = compute_idf(entries)
-    print(idf_values["airborne"])
-    print(idf_values["the"])
 
-    # while True:
-    #         question = input("\nAsk a rules question (or 'quit' to exit): ")
-    #         if question.lower() == "quit":
-    #             break
-    #         relevant_rulings = search_rules(entries, question)
+    while True:
+            question = input("\nAsk a rules question (or 'quit' to exit): ")
+            if question.lower() == "quit":
+                break
+            relevant_rulings = search_rules(entries, question, idf_values)

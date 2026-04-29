@@ -1,5 +1,5 @@
 import textwrap
-from rules_loader import search_rules, load_rules, RulesEntry
+from rules_loader import search_rules, load_rules, compute_idf, RulesEntry
 from anthropic import Anthropic
 from config import ANTHROPIC_API_KEY
 
@@ -18,7 +18,8 @@ def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
 
 
 def ask_rules_bot(entries:list[RulesEntry], question:str) -> None:
-    relevant_rulings = search_rules(entries, question)
+    idf_values = compute_idf(entries)
+    relevant_rulings = search_rules(entries, question, idf_values)
     formatted_rulings = format_rules_context(relevant_rulings)
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
