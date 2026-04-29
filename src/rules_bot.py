@@ -17,8 +17,7 @@ def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
 
 
 
-def ask_rules_bot(entries:list[RulesEntry], question:str) -> None:
-    idf_values = compute_idf(entries)
+def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, float]) -> None:
     relevant_rulings = search_rules(entries, question, idf_values)
     formatted_rulings = format_rules_context(relevant_rulings)
     message = client.messages.create(
@@ -47,8 +46,10 @@ def ask_rules_bot(entries:list[RulesEntry], question:str) -> None:
 
 if __name__ == "__main__":
     entries = load_rules("data/codex-27 Apr 2026.csv")
+    idf_values = compute_idf(entries)
+
     while True:
         question = input("\nAsk a rules question (or 'quit' to exit): ")
         if question.lower() == "quit":
             break
-        ask_rules_bot(entries, question)
+        ask_rules_bot(entries, question, idf_values)
