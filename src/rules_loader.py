@@ -31,8 +31,35 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
     most_relevant:list[RulesEntry] = []
     words = query.split()
     STOP_WORDS = {"the", "a", "an", "is", "are", "can", "how", "does", "do", "what", "when", "be", "i", "to", "it", "of", "in", "and", "or", "my"}
+    SYNONYM_GROUPS = [
+    ["play", "playing", "played", "cast", "casting"],
+    ["card", "cards"],
+    ["turn", "turns"],
+    ["spell", "spells"],
+    ["minion", "minions", "unit", "units"],
+    ["site", "sites"],
+    ["kill", "killed", "destroy", "destroyed", "kills"],
+    ["die", "dies", "dying", "death"],
+    ["move", "moves", "moving", "movement", "traverse", "enter"],
+    ["opponent", "opponent's", "enemy"],
+    ["banish", "banished"],
+    ["airborne", "fly", "flying"],
+    ["near", "nearby"],
+    ["heal", "life"],
+    ["projectile", "shoot", "throw"]
+    ]
     cleaned = [normalise_word(word) for word in words]
     key_words = [word for word in cleaned if word not in STOP_WORDS]
+
+    # generates a dictionary of synonyms mapping to eachother from a list of lists
+    synonym_dict = synonym_dictionary_creator(SYNONYM_GROUPS)
+    expanded_key_words = []
+    # adds the synonym words for key_words to key_words so they are also searched
+    for word in key_words:
+        if word in synonym_dict:
+            expanded_key_words += synonym_dict[word]
+    key_words = key_words + expanded_key_words
+
     scoreboard:list[float] = []
     for entry in entries:
         score = 0
@@ -51,8 +78,9 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
         
         # looping through all keywords, generating a score for an entry based on TF (term frequency) * IDF (Inverse document frequency)
         for word in key_words:
-            score += (all_words.count(word) * idf_values[word]) / len(all_words)
-        
+            if word in idf_values:
+                score += (all_words.count(word) * idf_values[word]) / max(len(all_words), 50)
+        # print(entry.title + " " + str(len(all_words))) debug entry word counts
         scoreboard.append(score)
 
         
@@ -65,7 +93,7 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
     # Sort by score, highest first
     paired.sort(key=lambda pair: pair[1], reverse=True)
     # Take top 5 and extract just the entries
-    most_relevant = [pair[0] for pair in paired[:5]]
+    most_relevant = [pair[0] for pair in paired[:8]]
     for rule in most_relevant:
         print(rule.title)
     print(key_words)
@@ -106,6 +134,18 @@ def compute_idf(entries: list[RulesEntry]) -> dict[str, float]:
 def normalise_word(word:str) -> str :
     cleaned_word = word.strip("?.,!;:'\"").lower()
     return cleaned_word
+
+
+def synonym_dictionary_creator(synonym_groups: list[list]) -> dict[str, list[str]]:
+    synonym_dict = {}
+
+    for group in synonym_groups:
+        for word in group:
+            other_words = [normalise_word(words) for words in group if words != word]
+            synonym_dict[normalise_word(word)] = other_words
+
+    return synonym_dict
+
 
 if __name__ == "__main__":
     entries = load_rules("data/codex-27 Apr 2026.csv")
