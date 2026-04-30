@@ -88,14 +88,16 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
     paired = list(zip(entries, scoreboard))
     # Filter out zero scores
     paired = [pair for pair in paired if pair[1] > (0)] # 0.4 * max(scoreboard)
-    for content, scored in paired:
-        print(f"Keyword: {content.title}: {scored}")
+    # below code is for debugging scores
+    # for content, scored in paired:
+    #     print(f"Keyword: {content.title}: {scored}")
     # Sort by score, highest first
     paired.sort(key=lambda pair: pair[1], reverse=True)
     # Take top 5 and extract just the entries
     most_relevant = [pair[0] for pair in paired[:8]]
-    for rule in most_relevant:
-        print(rule.title)
+    # below code is for debugging relevance
+    # for rule in most_relevant:
+    #     print(rule.title)
     print(key_words)
     return most_relevant
 

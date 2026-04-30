@@ -28,13 +28,15 @@ def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, 
         Answer using ONLY the rules provided below.
         If the answer isn't in the provided rules, say so.
         Answer in the following format, with a single sentence per line of information.
+        Ensure information isn't repeated between sections and is within the most relevant section.
+        Only include the Exception section if a specific exception exists. Never include it to state that no exceptions were found.
         <format>
         Answer:
         Insert the answer to the question here.
         Rules:
         Insert the rules supporting the answer here.
         Exception:
-        If there are any, insert the exceptions to the answer/rule here.
+        Insert the exceptions to the answer/rule here.
         </format>
         """),
         messages=[
