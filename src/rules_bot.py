@@ -1,22 +1,79 @@
 import textwrap
 import json
+import re
+import sqlite3
 from rules_loader import search_rules, load_rules, compute_idf, RulesEntry
 from anthropic import Anthropic
-from config import ANTHROPIC_API_KEY
+from config import ANTHROPIC_API_KEY, DATABASE_PATH
 
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
 def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
     formatted_context:str = ""
+    cards_in_data = []
     for entry in relevant_entries:
+        # += as none will not be added with this
         formatted_context += f"---\nRULE: {entry.title}\n{entry.content}\n"
+        # checks for cards in [[]] format within content text
+        cards_in_data += re.findall(r"\[\[(.+?)\]\]", entry.content)
+        # check if subcodexes aexist
         if entry.subcodexes is not None:
+            # loop through subcodex info an add to str
             for label, text in entry.subcodexes.items():
                 formatted_context += f"  {label}: {text}\n"
+                # += as none will not be added with this
+                # checks for cards in [[]] format within subcodex text
+                cards_in_data += re.findall(r"\[\[(.+?)\]\]", text)
+
+    for card in cards_in_data:
+        card_info = get_card_info(card)
+        if card_info is not None:
+            formatted_context += f"\n---\nCARD: {card}\n{json.dumps(card_info)}\n"
+
     return formatted_context
 
+def get_card_info(card_name:str) -> dict | None:
+    if DATABASE_PATH is None:
+        return
+    with sqlite3.connect(DATABASE_PATH) as conn:
+        card_info = conn.execute("""
+            SELECT  name,
+                    rarity,
+                    description,
+                    cost,
+                    threshold, 
+                    element, 
+                    type_line, 
+                    card_category, 
+                    card_type, 
+                    card_subtype, 
+                    power_rating, 
+                    defense_power
+            FROM cards
+            WHERE name = ?
 
+        """, 
+        (card_name,)).fetchone()
+        if card_info is None:
+            return
+        else:
+            keys = ["name", 
+                    "rarity", 
+                    "description", 
+                    "cost", 
+                    "threshold", 
+                    "element", 
+                    "type_line", 
+                    "card_category", 
+                    "card_type", 
+                    "card_subtype", 
+                    "power_rating", 
+                    "defense_power"]
+            return dict(zip(keys, card_info))
+    
+
+    
 
 def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, float]) -> None:
     relevant_rulings = search_rules(entries, question, idf_values)
