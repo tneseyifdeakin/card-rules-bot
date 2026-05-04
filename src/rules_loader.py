@@ -55,7 +55,7 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
     synonym_dict = synonym_dictionary_creator(SYNONYM_GROUPS)
     expanded_key_words = []
     # adds the synonym words for key_words to key_words so they are also searched
-    for word in key_words:
+    for word in set(key_words):
         if word in synonym_dict:
             expanded_key_words += synonym_dict[word]
     key_words = key_words + expanded_key_words
@@ -77,7 +77,7 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
                 all_words.append(normalise_word(word))
         
         # looping through all keywords, generating a score for an entry based on TF (term frequency) * IDF (Inverse document frequency)
-        for word in key_words:
+        for word in set(key_words):
             if word in idf_values:
                 score += (all_words.count(word) * idf_values[word]) / max(len(all_words), 50)
         # print(entry.title + " " + str(len(all_words))) debug entry word counts
@@ -96,8 +96,8 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
     # Take top 5 and extract just the entries
     most_relevant = [pair[0] for pair in paired[:8]]
     # below code is for debugging relevance
-    # for rule in most_relevant:
-    #     print(rule.title)
+    for rule in most_relevant:
+        print(rule.title)
     print(key_words)
     return most_relevant
 
@@ -134,7 +134,7 @@ def compute_idf(entries: list[RulesEntry]) -> dict[str, float]:
 
 # takes a str and outputs lowercase punctuation stripped str
 def normalise_word(word:str) -> str :
-    cleaned_word = word.strip("?.,!;:'\"").lower()
+    cleaned_word = word.strip("?.,!;:'\"[]").lower()
     return cleaned_word
 
 

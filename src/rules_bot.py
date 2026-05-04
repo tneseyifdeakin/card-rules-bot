@@ -9,6 +9,9 @@ from config import ANTHROPIC_API_KEY, DATABASE_PATH
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
+def extract_card_refs(text: str) -> list[str]:
+    return re.findall(r"\[\[(.+?)\]\]", text)
+
 def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
     formatted_context:str = ""
     cards_in_data = []
@@ -16,7 +19,7 @@ def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
         # += as none will not be added with this
         formatted_context += f"---\nRULE: {entry.title}\n{entry.content}\n"
         # checks for cards in [[]] format within content text
-        cards_in_data += re.findall(r"\[\[(.+?)\]\]", entry.content)
+        cards_in_data += extract_card_refs(entry.content)
         # check if subcodexes aexist
         if entry.subcodexes is not None:
             # loop through subcodex info an add to str
@@ -24,9 +27,9 @@ def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
                 formatted_context += f"  {label}: {text}\n"
                 # += as none will not be added with this
                 # checks for cards in [[]] format within subcodex text
-                cards_in_data += re.findall(r"\[\[(.+?)\]\]", text)
+                cards_in_data += extract_card_refs(text)
 
-    for card in cards_in_data:
+    for card in set(cards_in_data):
         card_info = get_card_info(card)
         if card_info is not None:
             formatted_context += f"\n---\nCARD: {card}\n{json.dumps(card_info)}\n"
@@ -76,8 +79,26 @@ def get_card_info(card_name:str) -> dict | None:
     
 
 def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, float]) -> None:
-    relevant_rulings = search_rules(entries, question, idf_values)
+    # removes card name from search question text so it isn't used as keyword
+    question_relevant_words = re.sub(r"\[\[.+?\]\]", "", question)
+    # extracts info on cards referenced in [[]] witin the question and saves as list
+    cards_in_question = extract_card_refs(question)
+    # initialise dict of card data
+    card_data = {}
+    # loops through each card name in extracted from question cards list
+    for card in cards_in_question:
+        # calls query to get info on current card within list
+        info = get_card_info(card)
+        # if query isn't none then map info to card_data dict[card name]
+        if info is not None:
+            card_data[card] = info
+            # appends card info into search for ruling and removes <br> formatting from card description
+            question_relevant_words += " " + re.sub(r"<br>", " ", info["description"])
+    relevant_rulings = search_rules(entries, question_relevant_words, idf_values)
     formatted_rulings = format_rules_context(relevant_rulings)
+    for card in card_data:
+        if card not in formatted_rulings:
+            formatted_rulings += f"\n---\nCARD: {card}\n{json.dumps(card_data[card])}\n"
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=1024,
@@ -137,7 +158,7 @@ if __name__ == "__main__":
     idf_values = compute_idf(entries)
 
     while True:
-        question = input("\nAsk a rules question (or 'quit' to exit): ")
+        question = input("\nAsk a rules question (use [[Card Name]] to reference cards, or 'quit' to exit): ")
         if question.lower() == "quit":
             break
         ask_rules_bot(entries, question, idf_values)
