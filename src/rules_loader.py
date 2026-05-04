@@ -10,17 +10,62 @@ class RulesEntry:
     subcodexes:dict[str, str]
 
 
+# takes a str and outputs lowercase punctuation stripped str
+def normalise_word(word:str) -> str :
+    cleaned_word = word.strip("?.,!;:'\"[]").lower()
+    return cleaned_word
+
+def synonym_dictionary_creator(synonym_groups: list[list]) -> dict[str, list[str]]:
+    synonym_dict = {}
+
+    for group in synonym_groups:
+        for word in group:
+            other_words = [normalise_word(words) for words in group if words != word]
+            synonym_dict[normalise_word(word)] = other_words
+
+    return synonym_dict
+
+
+STOP_WORDS = {"the", "a", "an", "is", "are", 
+                "can", "how", "does", "do", "what", 
+                "when", "be", "i", "to", "it", 
+                "of", "in", "and", "or", "my"}
+
+SYNONYM_GROUPS = [
+["play", "playing", "played", "cast", "casting"],
+["card", "cards"],
+["turn", "turns"],
+["spell", "spells"],
+["minion", "minions", "unit", "units"],
+["site", "sites"],
+["kill", "killed", "destroy", "destroyed", "kills"],
+["die", "dies", "dying", "death"],
+["move", "moves", "moving", "movement", "traverse", "enter"],
+["opponent", "opponent's", "enemy"],
+["banish", "banished"],
+["airborne", "fly", "flying"],
+["near", "nearby"],
+["heal", "life"],
+["projectile", "shoot", "throw"]]
+
+# generates a dictionary of synonyms mapping to eachother from a list of lists
+SYNONYM_DICT = synonym_dictionary_creator(SYNONYM_GROUPS)
+
+
+# read rules entries from .csv and returns list of DataClass RulesEntry
 def load_rules(path: str) -> list[RulesEntry]:
     entries:list[RulesEntry] = []
     latest_entry:RulesEntry
-    with open(path, "r", encoding="utf-8") as f:
+    with open(path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             if row["title"] != "":
                 latest_entry = RulesEntry(row["title"], row["content"], subcodexes={})
                 entries.append(latest_entry)
             else:
+                # split subcodex column cell into name:info format
                 new_dict = row["subcodexes"].split(":", 1)
+                # save subcodex to dict[name]: subcodex_info
                 latest_entry.subcodexes[new_dict[0]] = new_dict[1]
     return entries
 
@@ -30,42 +75,27 @@ def load_rules(path: str) -> list[RulesEntry]:
 def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,float]) -> list[RulesEntry]:
     most_relevant:list[RulesEntry] = []
     words = query.split()
-    STOP_WORDS = {"the", "a", "an", "is", "are", "can", "how", "does", "do", "what", "when", "be", "i", "to", "it", "of", "in", "and", "or", "my"}
-    SYNONYM_GROUPS = [
-    ["play", "playing", "played", "cast", "casting"],
-    ["card", "cards"],
-    ["turn", "turns"],
-    ["spell", "spells"],
-    ["minion", "minions", "unit", "units"],
-    ["site", "sites"],
-    ["kill", "killed", "destroy", "destroyed", "kills"],
-    ["die", "dies", "dying", "death"],
-    ["move", "moves", "moving", "movement", "traverse", "enter"],
-    ["opponent", "opponent's", "enemy"],
-    ["banish", "banished"],
-    ["airborne", "fly", "flying"],
-    ["near", "nearby"],
-    ["heal", "life"],
-    ["projectile", "shoot", "throw"]
-    ]
+
     cleaned = [normalise_word(word) for word in words]
     key_words = [word for word in cleaned if word not in STOP_WORDS]
 
-    # generates a dictionary of synonyms mapping to eachother from a list of lists
-    synonym_dict = synonym_dictionary_creator(SYNONYM_GROUPS)
     expanded_key_words = []
+
     # adds the synonym words for key_words to key_words so they are also searched
     for word in set(key_words):
-        if word in synonym_dict:
-            expanded_key_words += synonym_dict[word]
+        if word in SYNONYM_DICT:
+            expanded_key_words += SYNONYM_DICT[word]
     key_words = key_words + expanded_key_words
 
     scoreboard:list[float] = []
+
     for entry in entries:
-        score = 0
+        score:float = 0.0
+
         # using list because we want to collect all words within an entry
         all_words = list()
         all_words.append(normalise_word(entry.title))
+
         # split str content into words and add each
         for word in entry.content.split():
             all_words.append(normalise_word(word))
@@ -76,35 +106,42 @@ def search_rules(entries: list[RulesEntry], query: str, idf_values: dict[str,flo
             for word in values.split():
                 all_words.append(normalise_word(word))
         
-        # looping through all keywords, generating a score for an entry based on TF (term frequency) * IDF (Inverse document frequency)
+        # looping through all keywords, generating a score for an 
+        # entry based on TF (term frequency) * IDF (Inverse document frequency)
         for word in set(key_words):
             if word in idf_values:
                 score += (all_words.count(word) * idf_values[word]) / max(len(all_words), 50)
+
         # print(entry.title + " " + str(len(all_words))) debug entry word counts
         scoreboard.append(score)
 
-        
     # Pair them up into a list of tuples
-    paired = list(zip(entries, scoreboard))
+    paired = list(zip(entries, scoreboard, strict=True))
+
     # Filter out zero scores
-    paired = [pair for pair in paired if pair[1] > (0)] # 0.4 * max(scoreboard)
+    paired = [pair for pair in paired if pair[1] > (0)]
+
     # below code is for debugging scores
     # for content, scored in paired:
     #     print(f"Keyword: {content.title}: {scored}")
+
     # Sort by score, highest first
     paired.sort(key=lambda pair: pair[1], reverse=True)
+
     # Take top 5 and extract just the entries
     most_relevant = [pair[0] for pair in paired[:8]]
+
     # below code is for debugging relevance
-    for rule in most_relevant:
-        print(rule.title)
-    print(key_words)
+    # for rule in most_relevant:
+    #     print(rule.title)
+    # print(key_words)
+
     return most_relevant
 
 
 def compute_idf(entries: list[RulesEntry]) -> dict[str, float]:
     # initialise counter for unique words
-    word_entry_counts = {}
+    word_entry_counts:dict[str, float] = {}
     # loop through each entry building set of unique words from them
     for entry in entries:
         # using set because we only care if word exists not amount of a given word for idf calc 
@@ -132,21 +169,6 @@ def compute_idf(entries: list[RulesEntry]) -> dict[str, float]:
         idf_value[word] = math.log(len(entries)/word_entry_counts[word])
     return idf_value
 
-# takes a str and outputs lowercase punctuation stripped str
-def normalise_word(word:str) -> str :
-    cleaned_word = word.strip("?.,!;:'\"[]").lower()
-    return cleaned_word
-
-
-def synonym_dictionary_creator(synonym_groups: list[list]) -> dict[str, list[str]]:
-    synonym_dict = {}
-
-    for group in synonym_groups:
-        for word in group:
-            other_words = [normalise_word(words) for words in group if words != word]
-            synonym_dict[normalise_word(word)] = other_words
-
-    return synonym_dict
 
 
 if __name__ == "__main__":

@@ -1,10 +1,12 @@
-import textwrap
 import json
 import re
 import sqlite3
-from rules_loader import search_rules, load_rules, compute_idf, RulesEntry
+import textwrap
+
 from anthropic import Anthropic
+
 from config import ANTHROPIC_API_KEY, DATABASE_PATH
+from rules_loader import RulesEntry, compute_idf, load_rules, search_rules
 
 client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -38,7 +40,7 @@ def format_rules_context(relevant_entries: list[RulesEntry]) -> str:
 
 def get_card_info(card_name:str) -> dict | None:
     if DATABASE_PATH is None:
-        return
+        return None
     with sqlite3.connect(DATABASE_PATH) as conn:
         card_info = conn.execute("""
             SELECT  name,
@@ -59,7 +61,7 @@ def get_card_info(card_name:str) -> dict | None:
         """, 
         (card_name,)).fetchone()
         if card_info is None:
-            return
+            return None
         else:
             keys = ["name", 
                     "rarity", 
@@ -73,7 +75,7 @@ def get_card_info(card_name:str) -> dict | None:
                     "card_subtype", 
                     "power_rating", 
                     "defense_power"]
-            return dict(zip(keys, card_info))
+            return dict(zip(keys, card_info, strict=True))
     
 
     
@@ -107,8 +109,10 @@ def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, 
         Answer using ONLY the rules provided below.
         If the answer isn't in the provided rules, say so.
         Output in a JSON format with Key: formatting.
-        Only include the exceptions section if a specific exception exists. Never include it to state that no exceptions were found.
-        Always include the rules section when your answer is based on the provided rules. Only omit it when the answer cannot be found in the provided rules.
+        Only include the exceptions section if a specific exception exists.
+        Never include it to state that no exceptions were found.
+        Always include the rules section when your answer is based on the provided rules. 
+        Only omit it when the answer cannot be found in the provided rules.
         Do not include markdown fencing in your response.
         Ensure information isn't repeated between sections and is within the most relevant section.
         {
