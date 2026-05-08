@@ -80,7 +80,7 @@ def get_card_info(card_name:str) -> dict | None:
 
     
 
-def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, float]) -> None:
+def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, float]) -> dict:
     # removes card name from search question text so it isn't used as keyword
     question_relevant_words = re.sub(r"\[\[.+?\]\]", "", question)
     # extracts info on cards referenced in [[]] witin the question and saves as list
@@ -129,31 +129,25 @@ def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, 
         ],
     )
     # print(message.content[0].text) # type: ignore
-    json_parser(message.content[0].text) # type: ignore
-    print(f"\nTokens used — input: {message.usage.input_tokens}, output: {message.usage.output_tokens}")
+    result = json_parser(message.content[0].text) # type: ignore
+    if isinstance(result, json.JSONDecodeError):
+        return {"error": "Failed to parse response", "raw": json_cleaner(message.content[0].text)} # type: ignore
+    else:
+        result["tokens"] = {"input": message.usage.input_tokens, "output": message.usage.output_tokens}
+        return result
 
 
-
-def json_parser(bot_response: str) -> None:
-    cleaned_response = bot_response.replace("```json", "").replace("```", "").strip()
-    output:str = ""
+def json_parser(bot_response: str) -> dict | json.JSONDecodeError:
+    cleaned_response = json_cleaner(bot_response)
     try:
-        response_json = json.loads(cleaned_response)
-        if "answer" in response_json:
-            output += f"Answer:\n{response_json['answer']}\n"
-        if "rules" in response_json:
-            output += "\nRules:\n"
-            for rule in response_json['rules']:
-                output += f"{rule}\n"
-        if "exceptions" in response_json:
-            output += "\nExceptions:\n"
-            for exception in response_json['exceptions']:
-                output += f"{exception}\n"
-        print(output)
+        json_formatted = json.loads(cleaned_response)
+        return json_formatted
     except json.JSONDecodeError as e:
-        print(f"Failed to parse response: {e}")
-        print(f"Raw response: {cleaned_response}")
-        
+        return e
+
+
+def json_cleaner(bot_response: str) -> str:
+        return bot_response.replace("```json", "").replace("```", "").strip()
 
 
 
@@ -165,4 +159,22 @@ if __name__ == "__main__":
         question = input("\nAsk a rules question (use [[Card Name]] to reference cards, or 'quit' to exit): ")
         if question.lower() == "quit":
             break
-        ask_rules_bot(entries, question, idf_values)
+        result = ask_rules_bot(entries, question, idf_values)
+        # when ask_rules_bot returns a dict i can use the below to process output for CLI
+        output:str = ""
+        if "answer" in result:
+            output += f"Answer:\n{result['answer']}\n"
+        if "rules" in result:
+            output += "\nRules:\n"
+            for rule in result['rules']:
+                output += f"{rule}\n"
+        if "exceptions" in result:
+            output += "\nExceptions:\n"
+            for exception in result['exceptions']:
+                output += f"{exception}\n"
+        if "error" in result:
+            output += f"{result['error']}\n{result['raw']}\n"
+        if "tokens" in result:
+            output += f"\nTokens used — input: {result['tokens']['input']}, output: {result['tokens']['output']}"
+        print(output)
+
