@@ -1,13 +1,11 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from config import RULES_CSV_PATH
 from rules_bot import ask_rules_bot
 from rules_loader import compute_idf, load_rules
-
-
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="../static"), name="static")

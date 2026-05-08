@@ -142,7 +142,7 @@ def json_parser(bot_response: str) -> dict | json.JSONDecodeError:
     cleaned_response = json_cleaner(bot_response)
     try:
         json_formatted = json.loads(cleaned_response)
-        return json_formatted
+        return json_formatted # type: ignore
     except json.JSONDecodeError as e:
         return e
 
