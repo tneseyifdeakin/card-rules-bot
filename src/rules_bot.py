@@ -95,7 +95,8 @@ def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, 
         if info is not None:
             card_data[card] = info
             # appends card info into search for ruling and removes <br> formatting from card description
-            question_relevant_words += " " + re.sub(r"<br>", " ", info["description"])
+            if info["description"] is not None:
+                question_relevant_words += " " + re.sub(r"<br>", " ", info["description"])
     relevant_rulings = search_rules(entries, question_relevant_words, idf_values)
     formatted_rulings = format_rules_context(relevant_rulings)
     for card in card_data:
