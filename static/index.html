@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sorcery Rules Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+        h1 {
+            color: #c9a227;
+        }
+        .input-area {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            background: #16213e;
+            color: #e0e0e0;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #c9a227;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #d4af37;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .response {
+            background: #16213e;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 16px;
+            margin-top: 12px;
+            display: none;
+        }
+        .answer {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .rules-list {
+            padding-left: 20px;
+        }
+        .rules-list li {
+            margin-bottom: 6px;
+        }
+        .section-label {
+            color: #c9a227;
+            font-weight: bold;
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+        .tokens {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #888;
+        }
+        .hint {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 16px;
+        }
+        .loading {
+            color: #c9a227;
+            font-style: italic;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sorcery: Contested Realm — Rules Bot</h1>
+    <p class="hint">Use [[Card Name]] to reference specific cards, e.g. "how does [[Dodge Roll]] work?"</p>
+    
+    <div class="input-area">
+        <input type="text" id="question" placeholder="Ask a rules question..." />
+        <button id="ask-btn" onclick="askQuestion()">Ask</button>
+    </div>
+    
+    <div id="response" class="response"></div>
+
+    <script>
+        // Let user press Enter to submit
+        document.getElementById("question").addEventListener("keydown", function(e) {
+            if (e.key === "Enter") askQuestion();
+        });
+
+        async function askQuestion() {
+            const input = document.getElementById("question");
+            const responseDiv = document.getElementById("response");
+            const btn = document.getElementById("ask-btn");
+            const question = input.value.trim();
+            
+            if (!question) return;
+
+            // Show loading state
+            btn.disabled = true;
+            responseDiv.style.display = "block";
+            responseDiv.innerHTML = '<p class="loading">Searching rules...</p>';
+
+            try {
+                const res = await fetch("/ask_question", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ user_question: question })
+                });
+                const data = await res.json();
+
+                let html = "";
+
+                // Check for error response
+                if (data.error) {
+                    html = `<p class="error">${data.error}</p>`;
+                    if (data.raw) html += `<p>${data.raw}</p>`;
+                } else {
+                    // Answer section
+                    if (data.answer) {
+                        html += `<div class="section-label">Answer</div>`;
+                        html += `<div class="answer">${data.answer}</div>`;
+                    }
+
+                    // Rules section - replace the existing one
+                    if (data.rules) {
+                        html += `<div class="section-label">Rules</div>`;
+                        const rules = Array.isArray(data.rules) ? data.rules : [data.rules];
+                        html += `<ul class="rules-list">`;
+                        for (const rule of rules) {
+                            html += `<li>${rule}</li>`;
+                        }
+                        html += `</ul>`;
+                    }
+
+                    // Exceptions section - replace the existing one
+                    if (data.exceptions) {
+                        html += `<div class="section-label">Exceptions</div>`;
+                        const exceptions = Array.isArray(data.exceptions) ? data.exceptions : [data.exceptions];
+                        html += `<ul class="rules-list">`;
+                        for (const exc of exceptions) {
+                            html += `<li>${exc}</li>`;
+                        }
+                        html += `</ul>`;
+                    }
+
+                    // Token usage
+                    if (data.tokens) {
+                        html += `<div class="tokens">Tokens — input: ${data.tokens.input}, output: ${data.tokens.output}</div>`;
+                    }
+                }
+
+                responseDiv.innerHTML = html;
+            } catch (err) {
+                responseDiv.innerHTML = `<p class="error">Failed to connect: ${err.message}</p>`;
+            }
+
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
