@@ -81,22 +81,7 @@ def get_card_info(card_name:str) -> dict | None:
     
 
 def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, float]) -> dict:
-    # removes card name from search question text so it isn't used as keyword
-    question_relevant_words = re.sub(r"\[\[.+?\]\]", "", question)
-    # extracts info on cards referenced in [[]] witin the question and saves as list
-    cards_in_question = extract_card_refs(question)
-    # initialise dict of card data
-    card_data = {}
-    # loops through each card name in extracted from question cards list
-    for card in cards_in_question:
-        # calls query to get info on current card within list
-        info = get_card_info(card)
-        # if query isn't none then map info to card_data dict[card name]
-        if info is not None:
-            card_data[card] = info
-            # appends card info into search for ruling and removes <br> formatting from card description
-            if info["description"] is not None:
-                question_relevant_words += " " + re.sub(r"<br>", " ", info["description"])
+    question_relevant_words, card_data = prepare_search_query(question)
     relevant_rulings = search_rules(entries, question_relevant_words, idf_values)
     formatted_rulings = format_rules_context(relevant_rulings)
     for card in card_data:
@@ -150,7 +135,24 @@ def json_parser(bot_response: str) -> dict | json.JSONDecodeError:
 def json_cleaner(bot_response: str) -> str:
         return bot_response.replace("```json", "").replace("```", "").strip()
 
-
+def prepare_search_query(question: str) -> tuple[str, dict]:
+    # removes card name from search question text so it isn't used as keyword
+    question_relevant_words = re.sub(r"\[\[.+?\]\]", "", question)
+    # extracts info on cards referenced in [[]] witin the question and saves as list
+    cards_in_question = extract_card_refs(question)
+    # initialise dict of card data
+    card_data = {}
+    # loops through each card name in extracted from question cards list
+    for card in cards_in_question:
+        # calls query to get info on current card within list
+        info = get_card_info(card)
+        # if query isn't none then map info to card_data dict[card name]
+        if info is not None:
+            card_data[card] = info
+            # appends card info into search for ruling and removes <br> formatting from card description
+            if info["description"] is not None:
+                question_relevant_words += " " + re.sub(r"<br>", " ", info["description"])
+    return (question_relevant_words, card_data)
 
 if __name__ == "__main__":
     entries = load_rules("data/codex-27 Apr 2026.csv")
