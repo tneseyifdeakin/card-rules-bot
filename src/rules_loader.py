@@ -170,7 +170,7 @@ def compute_idf(entries: list[RulesEntry]) -> dict[str, float]:
     return idf_value
 
 
-
+# CLI
 if __name__ == "__main__":
     entries = load_rules("data/codex-27 Apr 2026.csv")
     idf_values = compute_idf(entries)
