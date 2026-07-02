@@ -1,0 +1,360 @@
+{
+    "timestamp": "2026-07-02_13-07-56",
+    "version": "dda1bb0240b865e382eb9cca15509427969860b2",
+    "scoring": {
+        "total_correct": 30,
+        "total_expected": 45
+    },
+    "questions": [
+        {
+            "question": "How does airborne work?",
+            "score": {
+                "correct": 2,
+                "expected": 2
+            },
+            "retrieved": [
+                "Airborne",
+                "Fly",
+                "Keyword Ability",
+                "On the Ground",
+                "Tawny",
+                "Atop",
+                "Phrases that are Synonymous",
+                "As If Connected"
+            ],
+            "expected": [
+                "Airborne",
+                "Fly"
+            ]
+        },
+        {
+            "question": "Can I cast a spell during my opponent's turn?",
+            "score": {
+                "correct": 1,
+                "expected": 3
+            },
+            "retrieved": [
+                "Play",
+                "Enemy",
+                "Mana",
+                "Spell",
+                "Spellcaster",
+                "Summoning Sickness",
+                "Must Be Cast",
+                "For Free"
+            ],
+            "expected": [
+                "Casting Spells",
+                "Main Phase",
+                "Mana"
+            ]
+        },
+        {
+            "question": "Can I defend against an airborne attacker with a non-airborne minion?",
+            "score": {
+                "correct": 2,
+                "expected": 2
+            },
+            "retrieved": [
+                "Airborne",
+                "Fly",
+                "Defender",
+                "Tawny",
+                "Defend",
+                "Unit",
+                "Minion",
+                "Immobile"
+            ],
+            "expected": [
+                "Airborne",
+                "Defend"
+            ]
+        },
+        {
+            "question": "What happens when a minion with voidwalk dies?",
+            "score": {
+                "correct": 2,
+                "expected": 3
+            },
+            "retrieved": [
+                "Die",
+                "Death Blow",
+                "Unit",
+                "Minion",
+                "Replacement Effect",
+                "Death's Door",
+                "Voidwalk",
+                "Kill Credit"
+            ],
+            "expected": [
+                "Voidwalk",
+                "Die",
+                "Cemetery"
+            ]
+        },
+        {
+            "question": "How does [[Dodge Roll]] work?",
+            "score": {
+                "correct": 1,
+                "expected": 3
+            },
+            "retrieved": [
+                "Play",
+                "Traverse",
+                "Move and Attack",
+                "Adjacent",
+                "Movement +X",
+                "As If Adjacent",
+                "Spellcaster",
+                "Must Be Cast"
+            ],
+            "expected": [
+                "Casting Spells",
+                "Adjacent",
+                "Move"
+            ]
+        },
+        {
+            "question": "What is the difference between nearby and adjacent?",
+            "score": {
+                "correct": 3,
+                "expected": 3
+            },
+            "retrieved": [
+                "Nearby",
+                "Near",
+                "Adjacent",
+                "Voidwalk",
+                "Border",
+                "As If Adjacent",
+                "Bruin",
+                "Phrases that are Synonymous"
+            ],
+            "expected": [
+                "Nearby",
+                "Adjacent",
+                "Near"
+            ]
+        },
+        {
+            "question": "Can an immobile unit attack?",
+            "score": {
+                "correct": 2,
+                "expected": 3
+            },
+            "retrieved": [
+                "Immobile",
+                "Unit",
+                "Minion",
+                "Attack",
+                "Fight",
+                "Cards with Multiple Types",
+                "Forced Movement",
+                "Untap"
+            ],
+            "expected": [
+                "Immobile",
+                "Move and Attack",
+                "Attack"
+            ]
+        },
+        {
+            "question": "What happens if I try to draw from an empty deck?",
+            "score": {
+                "correct": 2,
+                "expected": 2
+            },
+            "retrieved": [
+                "Draw",
+                "Winning the Game",
+                "Materials Needed to Play Sorcery",
+                "Top",
+                "Bottom",
+                "Start Phase",
+                "Empty Site",
+                "Rarity"
+            ],
+            "expected": [
+                "Draw",
+                "Winning the Game"
+            ]
+        },
+        {
+            "question": "How does intercept work?",
+            "score": {
+                "correct": 1,
+                "expected": 3
+            },
+            "retrieved": [
+                "Intercept",
+                "Basic Ability",
+                "As If Connected",
+                "Tournament Rules",
+                "Updated Cards",
+                "Die",
+                "Carrying Units",
+                "Ongoing Effect"
+            ],
+            "expected": [
+                "Intercept",
+                "Defend",
+                "Move and Attack"
+            ]
+        },
+        {
+            "question": "Can I target a unit with 'can't be targeted by magic' using an artifact?",
+            "score": {
+                "correct": 3,
+                "expected": 5
+            },
+            "retrieved": [
+                "Card Type",
+                "Magic",
+                "Carrying Artifacts",
+                "Artifact",
+                "Target",
+                "Cards with Multiple Types",
+                "Unit",
+                "Minion"
+            ],
+            "expected": [
+                "Target",
+                "Magic",
+                "Artifact",
+                "Can vs. Can't",
+                "The Silver Rule"
+            ]
+        },
+        {
+            "question": "What is the golden rule?",
+            "score": {
+                "correct": 1,
+                "expected": 1
+            },
+            "retrieved": [
+                "The Golden Rule",
+                "Square",
+                "Prevention Effect",
+                "Card",
+                "Tournament Rules",
+                "Damage",
+                "Mandatory Actions",
+                "Ongoing Effect"
+            ],
+            "expected": [
+                "The Golden Rule"
+            ]
+        },
+        {
+            "question": "When does summoning sickness wear off?",
+            "score": {
+                "correct": 1,
+                "expected": 2
+            },
+            "retrieved": [
+                "Charge",
+                "Summoning Sickness",
+                "Tap",
+                "Voidwalk",
+                "Burrowing",
+                "Submerge",
+                "Casting Spells",
+                "Move"
+            ],
+            "expected": [
+                "Summoning Sickness",
+                "Summon"
+            ]
+        },
+        {
+            "question": "Can auras be destroyed by [[Disenchant]] even if they are aura minions?",
+            "score": {
+                "correct": 2,
+                "expected": 5
+            },
+            "retrieved": [
+                "Kill",
+                "Immobile",
+                "Pick Up",
+                "Cards with Multiple Types",
+                "Aura",
+                "Untap",
+                "There",
+                "Kill Credit"
+            ],
+            "expected": [
+                "Aura",
+                "Aura minion",
+                "Cards with Multiple Types",
+                "Dispel",
+                "Die"
+            ]
+        },
+        {
+            "question": "What happens if my deck runs out of cards?",
+            "score": {
+                "correct": 1,
+                "expected": 2
+            },
+            "retrieved": [
+                "Materials Needed to Play Sorcery",
+                "Look At",
+                "Bottom",
+                "Top",
+                "Rarity",
+                "Ability",
+                "Winning the Game",
+                "Card"
+            ],
+            "expected": [
+                "Draw",
+                "Winning the Game"
+            ]
+        },
+        {
+            "question": "How do I win the game?",
+            "score": {
+                "correct": 3,
+                "expected": 3
+            },
+            "retrieved": [
+                "Winning the Game",
+                "Banished",
+                "Card",
+                "Death Blow",
+                "Death's Door",
+                "Subtypes",
+                "Hand",
+                "Evil"
+            ],
+            "expected": [
+                "Winning the Game",
+                "Death Blow",
+                "Death's Door"
+            ]
+        },
+        {
+            "question": "Can [[Failed Mutation]] be targeted by [[Bury]]?",
+            "score": {
+                "correct": 3,
+                "expected": 3
+            },
+            "retrieved": [
+                "Magic",
+                "Carrying Artifacts",
+                "Card Type",
+                "Target",
+                "Bearer",
+                "Artifact",
+                "Cards with Multiple Types",
+                "Can vs. Can't"
+            ],
+            "expected": [
+                "Target",
+                "Magic",
+                "Can vs. Can't"
+            ]
+        }
+    ],
+    "method": "TF-IDF"
+}
