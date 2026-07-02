@@ -1,0 +1,98 @@
+[
+  {
+    "question": "How does airborne work?",
+    "type": "simple_lookup",
+    "expected_entries": ["Airborne", "Fly"],
+    "expected_answer": "Airborne lets a unit fly on the surface, granting diagonal movement, immunity to non-airborne attacks, and immunity to interception unless the interceptor has Airborne or Ranged"
+  },
+  {
+    "question": "Can I cast a spell during my opponent's turn?",
+    "type": "synonym_mismatch",
+    "expected_entries": ["Casting Spells", "Main Phase", "Mana"],
+    "expected_answer": "No, you can only cast spells during your main phase while the storyline is empty, and you cannot generate mana on your opponent's turn"
+  },
+  {
+    "question": "Can I defend against an airborne attacker with a non-airborne minion?",
+    "type": "multi_concept",
+    "expected_entries": ["Airborne", "Defend"],
+    "expected_answer": "Yes, attacks from Airborne units can be defended normally by any unit because the Airborne unit must swoop down to attack"
+  },
+  {
+    "question": "What happens when a minion with voidwalk dies?",
+    "type": "multi_concept",
+    "expected_entries": ["Voidwalk", "Die", "Cemetery"],
+    "expected_answer": "When a minion with Voidwalk dies it goes to the cemetery like any other minion — Voidwalk only prevents banishment from occupying a void location, it does not prevent death"
+  },
+  {
+    "question": "How does [[Dodge Roll]] work?",
+    "type": "card_reference",
+    "expected_entries": ["Casting Spells", "Adjacent", "Move"],
+    "expected_answer": "Dodge Roll is a Magic spell that can be cast when an ally is attacked, allowing that ally to move to an adjacent location to evade the attack"
+  },
+  {
+    "question": "What is the difference between nearby and adjacent?",
+    "type": "comparison",
+    "expected_entries": ["Nearby", "Adjacent", "Near"],
+    "expected_answer": "Adjacent includes the current square and 4 orthogonal squares (no diagonals), nearby includes the current square and all 8 surrounding squares (including diagonals)"
+  },
+  {
+    "question": "Can an immobile unit attack?",
+    "type": "direct_lookup",
+    "expected_entries": ["Immobile", "Move and Attack", "Attack"],
+    "expected_answer": "Yes, an Immobile unit cannot take steps but can still attack and defend at its current location using Move and Attack"
+  },
+  {
+    "question": "What happens if I try to draw from an empty deck?",
+    "type": "specific_interaction",
+    "expected_entries": ["Draw", "Winning the Game"],
+    "expected_answer": "If you attempt to draw from an empty deck, you immediately lose the game"
+  },
+  {
+    "question": "How does intercept work?",
+    "type": "complex_rule",
+    "expected_entries": ["Intercept", "Defend", "Move and Attack"],
+    "expected_answer": "Intercept is a basic ability that lets an untapped unit fight an opponent's unit that uses Move and Attack, without it counting as an attack — it triggers when an enemy moves into a nearby location"
+  },
+  {
+    "question": "Can I target a unit with 'can't be targeted by magic' using an artifact?",
+    "type": "interaction_ruling",
+    "expected_entries": ["Target", "Magic", "Artifact", "Can vs. Can't", "The Silver Rule"],
+    "expected_answer": "Yes, 'can't be targeted by magic' only prevents Magic spells from targeting it — artifacts are a different card type and can still target it"
+  },
+  {
+    "question": "What is the golden rule?",
+    "type": "direct_lookup",
+    "expected_entries": ["The Golden Rule"],
+    "expected_answer": "The Golden Rule is that some card text is intentionally informal or compact — use common sense and be cool"
+  },
+  {
+    "question": "When does summoning sickness wear off?",
+    "type": "timing",
+    "expected_entries": ["Summoning Sickness", "Summon"],
+    "expected_answer": "Summoning sickness wears off at the end of the turn the minion entered the realm"
+  },
+  {
+    "question": "Can auras be destroyed by [[Disenchant]] even if they are aura minions?",
+    "type": "community_faq",
+    "expected_entries": ["Aura", "Aura minion", "Cards with Multiple Types", "Dispel", "Die"],
+    "expected_answer": "Yes, Disenchant checks for cards with the aura type and destroys them regardless of whether they are also minions"
+  },
+  {
+    "question": "What happens if my deck runs out of cards?",
+    "type": "rephrased_q8",
+    "expected_entries": ["Draw", "Winning the Game"],
+    "expected_answer": "If you attempt to draw from an empty deck, you immediately lose the game"
+  },
+  {
+    "question": "How do I win the game?",
+    "type": "simple_lookup",
+    "expected_entries": ["Winning the Game", "Death Blow", "Death's Door"],
+    "expected_answer": "You win by dealing a death blow to your opponent's avatar while they are on death's door, or if your opponent attempts to draw from an empty deck"
+  },
+  {
+    "question": "Can [[Failed Mutation]] be targeted by [[Bury]]?",
+    "type": "multi_card_reference",
+    "expected_entries": ["Target", "Magic", "Can vs. Can't"],
+    "expected_answer": "No, if Failed Mutation has 'can't be targeted by magic' and Bury is a Magic spell that targets, it cannot target Failed Mutation"
+  }
+]
