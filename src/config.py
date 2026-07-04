@@ -17,3 +17,8 @@ EVAL_SAVE_PATH: Path | None = None
 raw_save_path  = os.getenv("EVAL_SAVE_PATH")
 if raw_save_path  is not None:
     EVAL_SAVE_PATH = Path(raw_save_path)
+
+CALIBRATION_SAVE_PATH: Path | None = None
+raw_save_path = os.getenv("CALIBRATION_SAVE_PATH")
+if raw_save_path is not None:
+    CALIBRATION_SAVE_PATH = Path(raw_save_path)
