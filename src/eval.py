@@ -58,8 +58,8 @@ def eval_retrieval() -> dict|None:
             "timestamp": eval_time.strftime("%Y-%m-%d_%H-%M-%S"),
             "version": subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip('\n'),
             "scoring": {"total_correct": running_total_correct,"total_expected":running_total_expected},
-            "questions": q_results,
-            "method": "TF-IDF"
+            "method": "TF-IDF",
+            "questions": q_results
         }
         return results_json
     else:

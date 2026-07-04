@@ -116,10 +116,18 @@ def ask_rules_bot(entries:list[RulesEntry], question:str, idf_values: dict[str, 
     )
     # print(message.content[0].text) # type: ignore
     result = json_parser(message.content[0].text) # type: ignore
+    
     if isinstance(result, json.JSONDecodeError):
-        return {"error": "Failed to parse response", "raw": json_cleaner(message.content[0].text)} # type: ignore
+        return {"question": question, 
+                "error": "Failed to parse response", 
+                "raw": json_cleaner(message.content[0].text), # type: ignore
+                "tokens": {"input": message.usage.input_tokens, "output": message.usage.output_tokens},
+                "retrieved": formatted_rulings
+                } 
     else:
         result["tokens"] = {"input": message.usage.input_tokens, "output": message.usage.output_tokens}
+        result["retrieved"] = formatted_rulings
+        result["question"] = question
         return result
 
 

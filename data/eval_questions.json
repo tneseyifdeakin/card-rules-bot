@@ -3,13 +3,13 @@
     "question": "How does airborne work?",
     "type": "simple_lookup",
     "expected_entries": ["Airborne", "Fly"],
-    "expected_answer": "Airborne lets a unit fly on the surface, granting diagonal movement, immunity to non-airborne attacks, and immunity to interception unless the interceptor has Airborne or Ranged"
+    "expected_answer": "Airborne lets a unit fly on the surface, granting diagonal movement, immunity to being targeted by non-airborne attacks, and immunity to interception unless the interceptor has Airborne or Ranged"
   },
   {
     "question": "Can I cast a spell during my opponent's turn?",
     "type": "synonym_mismatch",
     "expected_entries": ["Casting Spells", "Main Phase", "Mana"],
-    "expected_answer": "No, you can only cast spells during your main phase while the storyline is empty, and you cannot generate mana on your opponent's turn"
+    "expected_answer": "No, you can only cast spells during your main phase while the storyline is empty, and you cannot generate mana on your opponent's turn. Some cards overturn timing restrictions e.g. [[Dodge Roll]]"
   },
   {
     "question": "Can I defend against an airborne attacker with a non-airborne minion?",
@@ -51,7 +51,7 @@
     "question": "How does intercept work?",
     "type": "complex_rule",
     "expected_entries": ["Intercept", "Defend", "Move and Attack"],
-    "expected_answer": "Intercept is a basic ability that lets an untapped unit fight an opponent's unit that uses Move and Attack, without it counting as an attack — it triggers when an enemy moves into a nearby location"
+    "expected_answer": "Intercept is a basic ability that lets an untapped unit fight an opponent's unit if that unit uses Move and Attack, finishes its movement at your unit's location, and does not attack"
   },
   {
     "question": "Can I target a unit with 'can't be targeted by magic' using an artifact?",
@@ -87,12 +87,12 @@
     "question": "How do I win the game?",
     "type": "simple_lookup",
     "expected_entries": ["Winning the Game", "Death Blow", "Death's Door"],
-    "expected_answer": "You win by dealing a death blow to your opponent's avatar while they are on death's door, or if your opponent attempts to draw from an empty deck"
+    "expected_answer": "You win by dealing a death blow to your opponent's avatar while they are on death's door, or if your opponent attempts to draw from an empty deck. Or if you meet an alternative win condition e.g. [[Wedding Hall]]"
   },
   {
     "question": "Can [[Failed Mutation]] be targeted by [[Bury]]?",
     "type": "multi_card_reference",
     "expected_entries": ["Target", "Magic", "Can vs. Can't"],
-    "expected_answer": "No, if Failed Mutation has 'can't be targeted by magic' and Bury is a Magic spell that targets, it cannot target Failed Mutation"
+    "expected_answer": "No, Failed Mutation has 'can't be targeted by magic' and Bury is a Magic spell that targets, so it cannot target Failed Mutation"
   }
 ]
