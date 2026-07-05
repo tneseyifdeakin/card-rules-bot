@@ -22,3 +22,9 @@ CALIBRATION_SAVE_PATH: Path | None = None
 raw_save_path = os.getenv("CALIBRATION_SAVE_PATH")
 if raw_save_path is not None:
     CALIBRATION_SAVE_PATH = Path(raw_save_path)
+    
+
+FIXTURE_SAVE_PATH: Path | None = None
+raw_save_path = os.getenv("FIXTURE_SAVE_PATH")
+if raw_save_path is not None:
+    FIXTURE_SAVE_PATH = Path(raw_save_path)

@@ -1,0 +1,106 @@
+{
+    "labels_for_calibration_file": "2026-07-04_10-59-37.json",
+    "calibration_version": "37b32084239debea06970e3a42f2bcca5ca46d83",
+    "labelling_criteria": {
+        "correctness": "answer matches expected_answer AND rules support the answer AND exceptions do not contradict the answer as a general claim. 1 pass / 0 fail",
+        "faithfulness": "the full response is attainable solely from the retrieved rulings and understanding of them. 1 pass / 0 fail"
+    },
+    "labels": [
+        {
+            "question": "How does airborne work?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": "Although there isn't explicit mention of airborne being defendable by non-airborne units when the airborne unit attacks, it is implied so I marked correct."
+        },
+        {
+            "question": "Can I cast a spell during my opponent's turn?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "Can I defend against an airborne attacker with a non-airborne minion?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "What happens when a minion with voidwalk dies?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "How does [[Dodge Roll]] work?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "What is the difference between nearby and adjacent?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "Can an immobile unit attack?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "What happens if I try to draw from an empty deck?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": "Semantically the same between you lose and opponent wins so marked correct"
+        },
+        {
+            "question": "How does intercept work?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": "Interesting that the retrieved has ---\n fencing at the start which might be a problem?"
+        },
+        {
+            "question": "Can I target a unit with 'can't be targeted by magic' using an artifact?",
+            "correctness": 0,
+            "faithfulness": 1,
+            "note": "Did not answer correctly as retrieval failed to find the two most relevant entries for this question, it was faithful to its retrieval and answered within given information by saying it couldn't answer."
+        },
+        {
+            "question": "What is the golden rule?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": "Has the weird triple dash fencing at start of retrieved rulings"
+        },
+        {
+            "question": "When does summoning sickness wear off?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "Can auras be destroyed by [[Disenchant]] even if they are aura minions?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "What happens if my deck runs out of cards?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "How do I win the game?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "Can [[Failed Mutation]] be targeted by [[Bury]]?",
+            "correctness": 1,
+            "faithfulness": 1,
+            "note": ""
+        }
+    ]
+}

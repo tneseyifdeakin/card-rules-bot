@@ -1,0 +1,73 @@
+{
+    "source_calibration_file": "2026-07-04_10-59-37.json",
+    "source_version": "37b32084239debea06970e3a42f2bcca5ca46d83",
+    "note": "Human-authored known-failure entries for judge calibration. Answers are placeholders until Thomas authors the corruptions. retrieved context is NOT duplicated here: the judge runner joins it from the source calibration file by question (keyed join to an immutable, committed, hash-stamped file). synthetic: true marks entries as authored failures, never bot output.",
+    "questions": [
+        {
+            "question": "How does airborne work?",
+            "answer": "Airborne lets a unit fly on the surface and move diagonally.",
+            "rules": [
+                "A unit with Airborne may fly while on the surface.",
+                "While on the surface, an Airborne unit may move diagonally when taking a step."
+            ],
+            "exceptions": null,
+            "expected_answer": "Airborne lets a unit fly on the surface, granting diagonal movement, immunity to being targeted by non-airborne attacks, and immunity to interception unless the interceptor has Airborne or Ranged",
+            "synthetic": true
+        },
+        {
+            "question": "What is the difference between nearby and adjacent?",
+            "answer": "Nearby includes only the current square and the four orthogonal squares that share a border, while adjacent includes the current square and all eight surrounding squares including diagonals.",
+            "rules": [
+                "Nearby means the current square and the four squares sharing a border with it.",
+                "Adjacent means the current square and all eight squares surrounding it, including diagonals."
+            ],
+            "exceptions": null,
+            "expected_answer": "Adjacent includes the current square and 4 orthogonal squares (no diagonals), nearby includes the current square and all 8 surrounding squares (including diagonals)",
+            "synthetic": true
+        },
+        {
+            "question": "Can an immobile unit attack?",
+            "answer": "No, immobile units cannot attack",
+            "rules": [
+                "Immobile units are unable to attack."
+            ],
+            "exceptions": null,
+            "expected_answer": "Yes, an Immobile unit cannot take steps but can still attack and defend at its current location using Move and Attack",
+            "synthetic": true
+        },
+        {
+            "question": "How does intercept work?",
+            "answer": "Intercept is a basic ability that allows your untapped units to step nearby to fight an enemy unit that used Move and Attack but chose not to attack, without actually attacking themselves.",
+            "rules": [
+                "When an enemy using Move and Attack finishes its movement and does not attack, your untapped units may step to a nearby enemy to intercept it.",
+                "Intercepting units fight the enemy without actually attacking."
+            ],
+            "exceptions": null,
+            "expected_answer": "Intercept is a basic ability that lets an untapped unit fight an opponent's unit if that unit uses Move and Attack, finishes its movement at your unit's location, and does not attack",
+            "synthetic": true
+        },
+        {
+            "question": "Can I target a unit with 'can't be targeted by magic' using an artifact?",
+            "answer": "Yes, 'can't be targeted by magic' only prevents Magic spells from targeting it; an artifact is a different card type and can still target the unit",
+            "rules": [
+                "The Silver Rule: card text means exactly what it says about the named card type.",
+                "Can vs. Can't: restriction effects are read narrowly against the stated type."
+            ],
+            "exceptions": null,
+            "expected_answer": "Yes, 'can't be targeted by magic' only prevents Magic spells from targeting it \u2014 artifacts are a different card type and can still target it",
+            "synthetic": true
+        },
+        {
+            "question": "How do I win the game?",
+            "answer": "You win by dealing a death blow to your opponent's avatar while they are on death's door, or if your opponent attempts to draw from an empty deck. You also win immediately if your opponent's avatar is banished, and some cards grant alternative win conditions e.g. [[Wedding Hall]].",
+            "rules": [
+                "You win by dealing a death blow to the enemy avatar while it is on death's door.",
+                "You win if your opponent attempts to draw a card from an empty deck.",
+                "A player wins immediately when the enemy avatar is banished."
+            ],
+            "exceptions": null,
+            "expected_answer": "You win by dealing a death blow to your opponent's avatar while they are on death's door, or if your opponent attempts to draw from an empty deck. Or if you meet an alternative win condition e.g. [[Wedding Hall]]",
+            "synthetic": true
+        }
+    ]
+}
