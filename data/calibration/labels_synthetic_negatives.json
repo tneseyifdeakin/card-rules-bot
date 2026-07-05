@@ -1,0 +1,52 @@
+{
+    "labels_for_calibration_file": "synthetic_negatives.json",
+    "calibration_version": "37b32084239debea06970e3a42f2bcca5ca46d83",
+    "labelling_criteria": {
+        "correctness": "answer matches expected_answer AND rules support the answer AND exceptions do not contradict the answer as a general claim. 1 pass / 0 fail",
+        "faithfulness": "the full response is attainable solely from the retrieved rulings and understanding of them. 1 pass / 0 fail"
+    },
+    "labels": [
+        {
+            "question": "How does airborne work?",
+            "intended_failure": "incomplete_but_grounded — wrong-but-faithful: everything stated is in the retrieved rulings, but the two immunities are missing so it fails the AND against expected",
+            "correctness": 0,
+            "faithfulness": 1,
+            "note": ""
+        },
+        {
+            "question": "What is the difference between nearby and adjacent?",
+            "intended_failure": "definition_swap — both fail: every word appears in the retrieved rulings but wrongly assigned; misreading ruled unfaithful (precedent: a claim contradicted by or absent from the rulings is unfaithful even when its words appear there)",
+            "correctness": 0,
+            "faithfulness": 0,
+            "note": ""
+        },
+        {
+            "question": "Can an immobile unit attack?",
+            "intended_failure": "flat_contradiction — both fail: directly contradicts expected and retrieved",
+            "correctness": 0,
+            "faithfulness": 0,
+            "note": ""
+        },
+        {
+            "question": "How does intercept work?",
+            "intended_failure": "subtle_condition_corruption — both fail: invents movement ('step nearby') where retrieved says intercepting units cannot move",
+            "correctness": 0,
+            "faithfulness": 0,
+            "note": ""
+        },
+        {
+            "question": "Can I target a unit with 'can't be targeted by magic' using an artifact?",
+            "intended_failure": "correct_but_unfaithful — answer matches expected but cites rules (Silver Rule, Can vs. Can't) absent from this question's retrieved context; direct test of judge input isolation",
+            "correctness": 1,
+            "faithfulness": 0,
+            "note": ""
+        },
+        {
+            "question": "How do I win the game?",
+            "intended_failure": "correct_plus_invented_extra — contains everything expected plus a false banish-win claim; unfaithful (Banished entry says nothing about winning) and ruled a correctness fail under AND semantics",
+            "correctness": 0,
+            "faithfulness": 0,
+            "note": ""
+        }
+    ]
+}
