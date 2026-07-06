@@ -3,7 +3,7 @@ import json
 import subprocess
 import textwrap
 from config import CALIBRATION_SAVE_PATH, FIXTURE_SAVE_PATH ,RULES_CSV_PATH, TEST_QUESTION_PATH
-from rules_bot import ask_rules_bot, client
+from rules_bot import ask_rules_bot, client, json_parser
 from rules_loader import compute_idf, load_rules, RulesEntry
 
 if TEST_QUESTION_PATH is not None:
@@ -93,7 +93,51 @@ def generate_fixture() -> None:
     with open(FIXTURE_SAVE_PATH/"correctness_fixture_raw.txt", 'w', encoding='utf-8') as f:
         f.write(result)
 
+def judge_parser(fixture_data:str) -> dict:
+    result = json_parser(fixture_data)
+    if isinstance(result, json.JSONDecodeError):
+        try:
+            salvaged_slice = json_parser(fixture_data[fixture_data.index("{"):fixture_data.rindex("}")+1])
+        except ValueError as e:
+            return {"raw": fixture_data,
+                    "error": f"Failed to salvage slice: {e}"}
+        
+        if isinstance(salvaged_slice, json.JSONDecodeError):
+            return {"raw": fixture_data, 
+                    "error": f"Salvaged slice error: {salvaged_slice}"
+                    } 
+        else: 
+            result = salvaged_slice
+    
+    if 'verdict' not in result:
+        return {"raw": fixture_data, 
+                "error": "missing verdict key"
+                } 
+    
+    elif 'justification' not in result:
+        return {"raw": fixture_data, 
+        "error": "missing justification key"
+        } 
 
+    elif type(result["verdict"]) is not int:
+        return {"raw": fixture_data, 
+                "error": f"Verdict is type: {type(result["verdict"])} should be int"
+                } 
+    elif type(result["justification"]) is not str:
+        return {"raw": fixture_data, 
+                "error": f"Justification is type: {type(result["justification"])} should be str"
+                } 
+    elif result["verdict"] != 0 and result["verdict"] != 1:
+        return {"raw": fixture_data, 
+                "error": f"Verdict is value: {result["verdict"]} should be 1 or 0"
+                }
+    
+    elif result["justification"] == "":
+        return {"raw": fixture_data, 
+                "error": "justification blank"
+                } 
+    
+    return result
 
 if __name__ == "__main__":
 
