@@ -1,0 +1,6 @@
+Here is my evaluation of the rules bot's response:
+
+{
+"justification": "The answer correctly identifies the three main benefits of Airborne: diagonal movement, immunity from being targeted by attacks unless the attacker has Airborne, and immunity from interception unless the interceptor has Airborne or Ranged. This matches the expected answer. The rules support all three claims made in the answer. The answer does not contradict any exceptions or rules provided.",
+"verdict": 1
+}
