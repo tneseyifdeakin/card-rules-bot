@@ -116,3 +116,19 @@ python src/rules_loader.py
 - [ ] Case-insensitive card name matching
 - [ ] Conversation memory for follow-up questions
 - [ ] Deployment to a public URL
+
+## Authorship
+
+This project was written by Thomas end to end as Phase 2 of a personal AI engineering roadmap. Claude (Anthropic's AI assistant) was used as a reviewer and sounding board rather than a code generator: explaining concepts on request, pointing out issues in drafts, and challenging design choices before they were committed.
+
+**Written by Thomas:**
+
+- `src/rules_loader.py` — Codex CSV parsing, TF-IDF implementation (term frequency, IDF computed at startup, length normalisation with a minimum floor), stop-word removal, synonym expansion and search
+- `src/rules_bot.py` — prompt design, structured JSON output contract, card reference extraction and SQLite lookup, output validation
+- `src/app.py` — FastAPI endpoints
+- `static/index.html` — web UI
+- `tests/` — test suite
+
+**Decisions made independently by Thomas:** replacing the original additive keyword scorer with TF-IDF after observing noise from common terms and domination by long entries; adding length normalisation and then a 50-word floor when short entries became over-inflated; expanding queries through a manual synonym map rather than moving to embeddings in this phase; returning structured JSON instead of freeform text so the frontend can render sections independently; sharing the card tracker's database rather than copying it.
+
+**AI involvement:** code review of drafts, explanations of TF-IDF and prompt-engineering concepts, and flagging edge cases (for example the model occasionally returning strings where arrays were expected, which led to the defensive handling in the frontend). No component was generated wholesale.
